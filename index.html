@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinyl Record Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #242424;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #f0f0f0;
+        }
+        
+        .record-player {
+            width: 500px;
+            height: 350px;
+            background-color: #8B4513;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .turntable {
+            width: 260px;
+            height: 260px;
+            background-color: #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 45px;
+            left: 45px;
+            overflow: hidden;
+            border: 1px solid #111;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .record {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, #111 30%, #222 32%, #111 32%, #222 34%, #111 34%, #222 36%, #111 36%, #222 38%, #111 38%, #222 40%, #111 40%, #222 44%);
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: spin 4s linear infinite paused;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .record.playing {
+            animation-play-state: running;
+        }
+        
+        .record-label {
+            width: 80px;
+            height: 80px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .tonearm-base {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            position: absolute;
+            top: 80px;
+            right: 70px;
+            border: 2px solid #222;
+        }
+        
+        .tonearm {
+            width: 120px;
+            height: 8px;
+            background-color: #777;
+            position: absolute;
+            top: 96px;
+            right: 104px;
+            transform-origin: right center;
+            transform: rotate(30deg);
+            transition: transform 0.5s ease;
+            z-index: 10;
+            border-radius: 2px;
+        }
+        
+        .tonearm.playing {
+            transform: rotate(-10deg);
+        }
+        
+        .cartridge {
+            width: 15px;
+            height: 12px;
+            background-color: #999;
+            position: absolute;
+            left: -5px;
+            top: -6px;
+            border-radius: 2px;
+            border: 1px solid #555;
+        }
+        
+        .needle {
+            width: 2px;
+            height: 10px;
+            background-color: #ddd;
+            position: absolute;
+            left: 2px;
+            bottom: -10px;
+            transform: rotate(-10deg);
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .play-btn, .stop-btn, .file-input-label {
+            padding: 8px 15px;
+            background-color: #222;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .play-btn:hover, .stop-btn:hover, .file-input-label:hover {
+            background-color: #444;
+        }
+        
+        .play-btn:active, .stop-btn:active, .file-input-label:active {
+            transform: scale(0.95);
+        }
+        
+        .play-btn:disabled {
+            background-color: #444;
+            cursor: not-allowed;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .now-playing {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            color: #ddd;
+        }
+        
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="record-player">
+        <div class="turntable">
+            <div class="record">
+                <div class="record-label">YOUR TRACK</div>
+            </div>
+        </div>
+        
+        <div class="tonearm-base"></div>
+        <div class="tonearm">
+            <div class="cartridge">
+                <div class="needle"></div>
+            </div>
+        </div>
+        
+        <div class="now-playing" id="now-playing">No track loaded</div>
+        
+        <div class="controls">
+            <label for="audio-file" class="file-input-label">Choose Audio</label>
+            <input type="file" id="audio-file" class="file-input" accept="audio/*">
+            <button class="play-btn" id="play-btn" disabled>Play</button>
+            <button class="stop-btn" id="stop-btn" disabled>Stop</button>
+        </div>
+    </div>
+    
+    <audio id="audio-player"></audio>
+    
+    <script>
+        const record = document.querySelector('.record');
+        const tonearm = document.querySelector('.tonearm');
+        const audioPlayer = document.getElementById('audio-player');
+        const fileInput = document.getElementById('audio-file');
+        const playBtn = document.getElementById('play-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const nowPlaying = document.getElementById('now-playing');
+        
+        // Audio file selection
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const audioURL = URL.createObjectURL(file);
+                audioPlayer.src = audioURL;
+                
+                // Enable play button
+                playBtn.disabled = false;
+                stopBtn.disabled = false;
+                
+                // Show filename
+                const fileName = file.name.length > 20 ? file.name.substring(0, 20) + '...' : file.name;
+                nowPlaying.textContent = `Track: ${fileName}`;
+                
+                // Update record label
+                document.querySelector('.record-label').textContent = fileName.substring(0, 10);
+            }
+        });
+        
+        // Play button
+        playBtn.addEventListener('click', function() {
+            audioPlayer.play();
+            record.classList.add('playing');
+            tonearm.classList.add('playing');
+        });
+        
+        // Stop button
+        stopBtn.addEventListener('click', function() {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            record.classList.remove('playing');
+            tonearm.classList.remove('playing');
+        });
+        
+        // When audio ends
+        audioPlayer.addEventListener('ended', function() {
+            record.classList.remove('playing');
+            tonearm.classList.remove('playing');
+        });
+    </script>
+</body>
+</html>
