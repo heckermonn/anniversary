@@ -74,9 +74,6 @@
   [data-theme='light'] {
     --lightness: 65%;
   }
-  @media (prefers-color-scheme: dark) {
-    --lightness: 75%;
-  }
   
   ul {
     --step: calc((var(--end) - var(--start)) / (var(--count) - 1));
