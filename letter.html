@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width=, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>My Letter To You.</title>
+    </head>
+<body>
+      <div class="envelope-container">
+        <div class="envelope wiggle">
+          <div class="envelope-front"></div>
+          <div class="flap"></div>
+          <div class="letter">
+            <h2>Hey cee,</h2>
+            <p>
+              This website is a passion project dedicated entirely to you. Unconventional, but probably
+              the most stereotypical thing that I could do as a CS Major. The culmination of my dedication
+              to you and my compromise as a broke ass individual. Nothing else drove me to make a project
+              as much as showing how much you meant to me did. I love you, and I hope I can show it.
+            </p>
+            <p>
+                Thanks for sticking with me thus far. I know it's been quite the long ride but i am
+                so so grateful that I've had such a supportive woman in my life. You have taught me
+                how to love myself, and how to love you as best i can. 
+            </p>
+            <p>
+                12 months is a long time to think about. In a year, people can accomplish so many things.
+                Some go from broke to rich, some make a name for themselves, some find their place in the world.
+                Me? I found you. In my eyes, that makes me feel like I've accomplished everything in the universe,
+                for you are my everything. I want to continue loving you for as long as the sun still shines,
+                and my heart still beats; For my heart beats to nothing if not the tune of your song.
+            </p>
+            <p>
+              And what a beautiful song I have experienced over the course of 365 days. I've felt so many
+              emotions, so many ups and downs it would make the biggest roller coaster seem like child's play.
+              And yet, I still want more. I wish for this song to go on and on, to never hear what the end sounds like,
+              for this has been the ride of a lifetime; I wish to know no other.
+            </p>
+            <p>
+              So thank you, Christina. For being by my side even when I push you away, loving me when I am
+              unlovable, and being there when I need you. I truly am blessed to have a love such as yours, and
+              want to build up our relationship to be the strongest it can be. Thank you for being you.
+              <a href="flowers.html">Here's to us.</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    
+      <script>
+        const envelope = document.querySelector('.envelope');
+        const letter = document.querySelector('.letter');
+        let isOpen = false;
+        
+        envelope.addEventListener('click', function() {
+          if (!isOpen) {
+            // Stop wiggling and open the envelope
+            envelope.classList.remove('wiggle');
+            envelope.classList.add('open');
+            letter.classList.add('visible');
+            isOpen = true;
+
+          } else {
+            // Close the envelope
+            envelope.classList.remove('open');
+            
+            // Start wiggling again after closing with a delay
+            setTimeout(() => {
+              envelope.classList.add('wiggle');
+            }, 500);
+            
+            isOpen = false;
+          }
+        });
+      </script>
+</body>
+</html>
